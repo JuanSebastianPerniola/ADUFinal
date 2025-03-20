@@ -1,18 +1,11 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-@Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.Date;
+
 public class Persona {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ID;
+    // Clase persona para recoger los datos de la persona para hacer la reserva
+    private String nombre, apellido, email;
+    private Integer edad, tarjetaBancaria;
+    private Double cantidadGastar;
+    private Date checkIn, chechOut;
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -13,8 +15,13 @@ public class Reserva {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ID;
+    private long IdReserva;
 
-    @ManyToMany(mappedBy = "habitaciones")
-    private Habitaciones habitaciones;
+    // mirar de que aqui ya venga la opcion selecionnada con el tipo de habitacion
+    @ManyToMany
+    @JoinColumn(name = "id_hotel")
+    private long id_hotel;
+
+    private Date checkOut, checkIn;
+
 }

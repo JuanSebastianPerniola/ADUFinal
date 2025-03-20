@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -16,5 +18,6 @@ public class ReservationList {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long ID;
 
-    @Join
+    @JoinColumn(name = "reserva")
+    private List<Reserva> reserva;
 }
