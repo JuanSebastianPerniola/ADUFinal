@@ -16,8 +16,9 @@ import java.util.List;
 public class ReservationList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ID;
-
+    private long id;
+    // con este join estamos cogiendo todos los siguientes valores =>
+    // checkin, checkout,
     @JoinColumn(name = "reserva")
     private List<Reserva> reserva;
 }

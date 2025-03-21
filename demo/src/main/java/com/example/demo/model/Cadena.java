@@ -14,41 +14,39 @@ import java.util.List;
 
 public class Cadena {
     // por ahora lo dejamos sin usar
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ID;
+    private long id; // Corrección: 'ID' → 'id' (convención Java)
 
-    // Guardaremos un listado de todos los tipos de hoteles
-    // 2 tipos de hoteles, cadena, no cadena,
-    // esto se añadira con true or false con boolean
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cadena_id")
-    private List<Hotel> hotel;
+    // Una cadena tiene muchos hoteles
+    @OneToMany(mappedBy = "esCadena", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Hotel> hoteles; // Corrección: 'hotel' → 'hoteles' (mejor claridad)
 
     private boolean esCadena;
 
     // Constructor
-    public void cadena(long id, List<Hotel> hotel, boolean esCadena) {
-        this.ID = id;
+    public void cadena(long id, List<Hotel> hoteles, boolean esCadena) {
+        this.id = id;
         this.esCadena = esCadena;
-        this.hotel = hotel;
+        this.hoteles = hoteles;
     }
 
     // Setter y getters
     public long getID() {
-        return ID;
+        return id;
     }
 
     public void setID(long ID) {
-        this.ID = ID;
+        this.id = id;
     }
 
     public List<Hotel> getHotel() {
-        return hotel;
+        return hoteles;
     }
 
     public void setHotel(List<Hotel> hotel) {
-        this.hotel = hotel;
+        this.hoteles = hoteles;
     }
 
     public boolean isEsCadena() {

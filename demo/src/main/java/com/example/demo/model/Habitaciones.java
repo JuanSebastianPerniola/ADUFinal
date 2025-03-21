@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 public class Habitaciones {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ID;
+    private long id;
 
     private String roomName;
 
     @ManyToOne
     @JoinColumn(name = "hotel_id")
-    private Hotel hotelId;
+    private Hotel hotel;
 
 }

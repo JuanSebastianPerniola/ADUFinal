@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -14,43 +16,31 @@ import lombok.NoArgsConstructor;
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ID;
+    private long id;
 
-    @ManyToMany
-    @JoinColumn(name = "reserva")
-    private Reserva reserva;
-    @ManyToMany
-    @JoinColumn(name = "habitaciones")
-    private Habitaciones habitaciones;
+    // Un hotel puede tener muchas reservas
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reserva> reservas;
+
+    // Un hotel tiene muchas habitaciones
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Habitaciones> habitaciones;
+
+    // Un hotel pertenece a una cadena (relacion muchos a uno)
     @ManyToOne
-    @JoinColumn(name = "fk_esCadena")
+    @JoinColumn(name = "fk_esCadena") // FK en la tabla 'hotel'
     private Cadena esCadena;
 
     private String nombreDeHotel;
 
+    private Integer numeroDeHoteles;
 
     public long getID() {
-        return ID;
+        return id;
     }
 
-    public void setID(long ID) {
-        this.ID = ID;
-    }
-
-    public Reserva getReserva() {
-        return reserva;
-    }
-
-    public void setReserva(Reserva reserva) {
-        this.reserva = reserva;
-    }
-
-    public Habitaciones getHabitaciones() {
-        return habitaciones;
-    }
-
-    public void setHabitaciones(Habitaciones habitaciones) {
-        this.habitaciones = habitaciones;
+    public void setID(long id) {
+        this.id = id;
     }
 
     public Cadena getEsCadena(Cadena esCadena) {
@@ -67,5 +57,29 @@ public class Hotel {
 
     public void setNombreDeHotel(String nombreDeHotel) {
         this.nombreDeHotel = nombreDeHotel;
+    }
+
+    public Integer getNumeroDeHoteles() {
+        return numeroDeHoteles;
+    }
+
+    public void setNumeroDeHoteles(Integer numeroDeHoteles) {
+        this.numeroDeHoteles = numeroDeHoteles;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
+
+    public List<Habitaciones> getHabitaciones() {
+        return habitaciones;
+    }
+
+    public void setHabitaciones(List<Habitaciones> habitaciones) {
+        this.habitaciones = habitaciones;
     }
 }
