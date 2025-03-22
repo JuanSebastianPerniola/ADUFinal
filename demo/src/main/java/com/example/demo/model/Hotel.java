@@ -30,9 +30,11 @@ public class Hotel {
     @ManyToOne
     @JoinColumn(name = "fk_esCadena") // FK en la tabla 'hotel'
     private Cadena esCadena;
-
+    
+    @Column(nullable = false)
     private String nombreDeHotel;
 
+    @Column(nullable = false)
     private Integer numeroDeHoteles;
 
     public long getID() {

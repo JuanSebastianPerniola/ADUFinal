@@ -29,7 +29,8 @@ public class Reserva {
             inverseJoinColumns = @JoinColumn(name = "hotel_id") // Clave foránea de Hotel
     )
     private List<Hotel> hoteles; // Corrección: 'id_hotel' → 'hoteles'
-
+    
+    @Column(nullable = false)
     private Date checkOut, checkIn;
 
     // Relación con ReservationList
