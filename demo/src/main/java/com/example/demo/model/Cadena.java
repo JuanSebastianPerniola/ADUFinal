@@ -13,13 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 
 public class Cadena {
-    // por ahora lo dejamos sin usar
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id; // Corrección: 'ID' → 'id' (convención Java)
+    private long id;
 
     // Una cadena tiene muchos hoteles
+    // Un hotel pertany a una cadena.
     @OneToMany(mappedBy = "esCadena", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Hotel> hoteles; // Corrección: 'hotel' → 'hoteles' (mejor claridad)
 

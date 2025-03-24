@@ -10,6 +10,7 @@ import java.util.List;
 public class Persona {
 
     // Tablas para la base de datos
+    // Una persona pot tenir N reserves.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +30,7 @@ public class Persona {
     @Column(name = "tarjeta_bancaria")
     private Integer tarjetaBancaria;
 
-    // Relación con la entidad Reserva (una persona puede tener muchas reservas)
+    // Una persona puede tener muchas reservas
     @OneToMany(mappedBy = "persona", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reserva> reservas;
 

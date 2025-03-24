@@ -20,6 +20,7 @@ public class ReservationList {
     
     // con este join estamos cogiendo todos los siguientes valores =>
     // checkin, checkout,
-    @JoinColumn(name = "reserva")
-    private List<Reserva> reserva;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "reservation_list_id") // This will create a foreign key in Reserva table
+    private List<Reserva> reservas;
 }

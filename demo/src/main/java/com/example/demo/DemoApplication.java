@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class DemoApplication {
-    // clase main para levantar el servicio
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
     }
-
 }

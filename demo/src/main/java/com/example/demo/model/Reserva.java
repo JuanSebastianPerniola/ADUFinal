@@ -20,26 +20,22 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idReserva;
 
-    // Relación Muchos a Muchos con Hotel para
+    // Relacion Muchos a Muchos con Hotel para
     // mostrar el hotel que se este haciendo la reserva
-    @ManyToMany
-    @JoinTable(
-            name = "reserva_hotel", // Nombre de la tabla intermedia
-            joinColumns = @JoinColumn(name = "reserva_id"), // Clave foránea de Reserva
-            inverseJoinColumns = @JoinColumn(name = "hotel_id") // Clave foránea de Hotel
-    )
-    private List<Hotel> hoteles; // Corrección: 'id_hotel' → 'hoteles'
+    @ManyToOne
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
     
     @Column(nullable = false)
     private Date checkOut, checkIn;
 
-    // Relación con ReservationList
+    // Relacion con ReservationList
     @ManyToOne
     @JoinColumn(name = "reservation_list_id")
     private ReservationList reservationList;
 
-    // Relación con persona
+    // Relacion con la tabla personas
     @ManyToOne
-    @JoinColumn(name = "persona_id")
-    private List<Persona> personaList;
+    @JoinColumn(name = "persona_id", nullable = false)
+    private Persona persona; // Relación con Persona
 }

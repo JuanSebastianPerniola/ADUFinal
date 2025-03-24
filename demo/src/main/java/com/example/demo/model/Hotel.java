@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -18,9 +19,8 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    // Un hotel puede tener muchas reservas
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reserva> reservas;
+    @OneToMany(mappedBy = "hotel")
+    private Set<Reserva> reservas;
 
     // Un hotel tiene muchas habitaciones
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -69,11 +69,11 @@ public class Hotel {
         this.numeroDeHoteles = numeroDeHoteles;
     }
 
-    public List<Reserva> getReservas() {
+    public Set<Reserva> getReservas() {
         return reservas;
     }
 
-    public void setReservas(List<Reserva> reservas) {
+    public void setReservas(Set<Reserva> reservas) {
         this.reservas = reservas;
     }
 
