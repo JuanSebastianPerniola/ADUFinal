@@ -4,55 +4,47 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Cadena {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    // Una cadena tiene muchos hoteles
-    // Un hotel pertany a una cadena.
-    @OneToMany(mappedBy = "esCadena", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Hotel> hoteles; // Corrección: 'hotel' → 'hoteles' (mejor claridad)
+    // Relación con Hotel: Una cadena tiene muchos hoteles
+    @OneToMany(mappedBy = "cadena", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Hotel> hoteles;
 
-    private boolean esCadena;
+    // Nombre de la cadena, puede ser null
+    @Column(nullable = true)
+    private String esCadena;
 
-    // Constructor
-    public void cadena(long id, List<Hotel> hoteles, boolean esCadena) {
-        this.id = id;
-        this.esCadena = esCadena;
-        this.hoteles = hoteles;
-    }
-
-    // Setter y getters
+    // Métodos corregidos
     public long getID() {
         return id;
     }
 
     public void setID(long ID) {
-        this.id = id;
+        this.id = ID;
     }
 
-    public List<Hotel> getHotel() {
+    public List<Hotel> getHoteles() {
         return hoteles;
     }
 
-    public void setHotel(List<Hotel> hotel) {
+    public void setHoteles(List<Hotel> hoteles) {
         this.hoteles = hoteles;
     }
 
-    public boolean isEsCadena() {
+    public String getEsCadena() {
         return esCadena;
     }
 
-    public void setEsCadena(boolean esCadena) {
+    public void setEsCadena(String esCadena) {
         this.esCadena = esCadena;
     }
 }

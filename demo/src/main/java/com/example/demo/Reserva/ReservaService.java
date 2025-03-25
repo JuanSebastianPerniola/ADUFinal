@@ -6,6 +6,7 @@ import java.util.List;
 import com.example.demo.HotelService.IHotelJPA;
 import com.example.demo.model.Hotel;
 import com.example.demo.model.Reserva;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,14 +19,13 @@ public class ReservaService {
     private IReservaJPA ireservaJPA;
 
     // Proceso de reserva
-    public Reserva GuardarProducio(Reserva reserva){
+    public Reserva GuardarReserva(Reserva reserva){
         return ireservaJPA.save(reserva);
     }
 
-    /*
-     * Listamos todas las opciones disponibles
-     */
-    public List<Reserva> ListarProducio(Reserva reserva){
-        return ireservaJPA.findAll();
+    // Listar todas las reservas con la información de la persona asociada
+    @Transactional // Esto mantiene la sesión de Hibernate abierta hasta que termine la consulta
+    public List<Object[]> listarReservas() {
+        return ireservaJPA.findAllWithPersonas();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,28 +15,30 @@ import java.util.List;
 @AllArgsConstructor
 public class Reserva {
 
-    // Una generada la reserva haremos que lo busque por el id de la reserva
-    // este id se mostrara en pantalla y se enviara a un mail
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long idReserva;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idReserva;
 
-    // Relacion Muchos a Muchos con Hotel para
-    // mostrar el hotel que se este haciendo la reserva
-    @ManyToOne
-    @JoinColumn(name = "hotel_id")
-    private Hotel hotel;
-    
     @Column(nullable = false)
     private Date checkOut, checkIn;
 
-    // Relacion con ReservationList
-    @ManyToOne
-    @JoinColumn(name = "reservation_list_id")
-    private ReservationList reservationList;
+    // Relación con Hotel (Muchos a Uno)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private Hotel hotel;
 
-    // Relacion con la tabla personas
-    @ManyToOne
+    // Relación con Persona (Muchos a Uno)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "persona_id", nullable = false)
-    private Persona persona; // Relación con Persona
+    private Persona persona;
+
+    // Evita recursión infinita
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reserva_padre_id")
+    private Reserva reservaPadre;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "reservaPadre", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reserva> subReservas;
 }

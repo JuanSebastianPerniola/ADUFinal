@@ -2,29 +2,28 @@ package com.example.demo.Reserva;
 
 import com.example.demo.model.Reserva;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/reserva")
 public class ReservaController {
+
     @Autowired
     private ReservaService reservaService;
 
+    // Guardar una reserva
     @PostMapping("/reservar")
-    public Reserva GuardarProducio(Reserva reserva){
-        // aqui guardaremos la reserva con el nombre de la persona y el chekin, checkout,
-        // date
-        return reservaService.GuardarProducio(reserva);
+    public Reserva guardarReserva(@RequestBody Reserva reserva) {
+        // Aquí guardamos la reserva con los detalles necesarios.
+        return reservaService.GuardarReserva(reserva);
     }
 
     // Mostrar todas las reservas hechas
-    @PostMapping("/reservationList")
-    public List<Reserva> MostrarReservas(Reserva reserva){
-        return reservaService.ListarProducio(reserva);
+    @GetMapping("/listar")
+    public List<Object[]> listarReservas() {
+        return reservaService.listarReservas();
     }
-
 }
