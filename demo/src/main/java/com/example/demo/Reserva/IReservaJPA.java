@@ -10,6 +10,7 @@
     @Repository
     public interface IReservaJPA extends JpaRepository<Reserva, Long> {
 
-        @Query("SELECT r.idReserva, r.checkIn, r.checkOut, p.nombre FROM Reserva r JOIN r.persona p")
+        @Query("SELECT r.idReserva, r.checkIn, r.checkOut, p.nombre, p.apellido, p.email" +
+                " FROM Reserva r JOIN r.persona p")
         List<Object[]> findAllWithPersonas();
     }
