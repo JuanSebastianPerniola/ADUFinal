@@ -11,22 +11,33 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/reserva")
 public class ReservaController {
-
+    // Llamamos el IJPA de la parte de springbooty 🍑
     @Autowired
     private ReservaService reservaService;
-
-    // Guardar una reserva
-    @PostMapping("/reservar")
-    public Reserva guardarReserva(@RequestBody Reserva reserva) {
-        // Generar codigo de reserva random
-        // Aquí guardamos la reserva con los detalles necesarios.
-        return reservaService.GuardarReserva(reserva);
-    }
 
     // Mostrar todas las reservas hechas
     @GetMapping("/listar")
     public ResponseEntity<List<Object[]>> listarReservas() {
         List<Object[]> reservas = reservaService.listarReservas();
         return ResponseEntity.ok().body(reservas);
+    }
+
+    // Delete
+    @DeleteMapping("/deleteReservar/{id}")
+    public ResponseEntity<String> elimnar(@PathVariable Long id) {
+        // Elimanar reserva por id
+        reservaService.EliminarReserva(id);
+        return ResponseEntity.ok("Reserva eliminado correctamente");
+    }
+
+    // Upadte
+    @PutMapping("/actualizar")
+    public ResponseEntity<Reserva> Actualizar(@RequestBody Reserva reserva) {
+        // Actualizar reserva
+        Reserva reservaUpdate = reservaService.GurdarReserva(reserva);
+        if(ResponseEntity.ok(reservaUpdate).hasBody()){
+            return ResponseEntity.ok(reservaUpdate);
+        }
+        return (ResponseEntity<Reserva>) ResponseEntity.badRequest();
     }
 }

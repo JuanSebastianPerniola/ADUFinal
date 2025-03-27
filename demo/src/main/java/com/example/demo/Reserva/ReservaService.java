@@ -17,15 +17,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ReservaService {
     @Autowired
     private IReservaJPA ireservaJPA;
-
-    // Proceso de reserva
-    public Reserva GuardarReserva(Reserva reserva){
-        return ireservaJPA.save(reserva);
-    }
-
     // Listar todas las reservas con la información de la persona asociada
     @Transactional // Esto mantiene la sesión de Hibernate abierta hasta que termine la consulta
     public List<Object[]> listarReservas() {
         return ireservaJPA.findAllWithPersonas();
+    }
+    public void EliminarReserva(Long id){
+        ireservaJPA.deleteById(id);
+    }
+    // Proceso de reserva no me sirve lo dejare para mantener
+    public Reserva Actualizar(Reserva reserva){
+        return ireservaJPA.save(reserva);
+    }
+    public Reserva GurdarReserva(Reserva reserva){
+        return ireservaJPA.save(reserva);
     }
 }

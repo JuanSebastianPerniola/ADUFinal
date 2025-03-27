@@ -18,6 +18,8 @@ public class HotelService {
      * Listamos todas las opciones disponibles
      * Las hacemos desde los hoteles, por que los hoteles son las que tienen las opciones
      */
+    // opcion a => mostrar todos los hoteles, y hacer un fetch del checkin y check out y que eso sea la opcion
+    // opcion b => mostrar opciones preparadas con una estrucuta mostrado un join de varias opciones
     public List<Hotel> ListarTodasOpcionesHotel(){
         return iHotelJPA.findAll();
     }
