@@ -2,6 +2,7 @@ package com.example.demo.Reserva;
 
 import com.example.demo.model.Reserva;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +33,10 @@ public class ReservaController {
 
     // Upadte
     @PutMapping("/actualizar")
-    public ResponseEntity<Reserva> Actualizar(@RequestBody Reserva reserva) {
-        // Actualizar reserva
-        Reserva reservaUpdate = reservaService.GurdarReserva(reserva);
-        if(ResponseEntity.ok(reservaUpdate).hasBody()){
-            return ResponseEntity.ok(reservaUpdate);
-        }
-        return (ResponseEntity<Reserva>) ResponseEntity.badRequest();
+    public ResponseEntity<?> actualizarReserva(@RequestBody Reserva reserva) {
+        Reserva actualizada = reservaService.ActualizarReserva(reserva);
+        return ResponseEntity.ok(actualizada);
     }
+
+
 }
