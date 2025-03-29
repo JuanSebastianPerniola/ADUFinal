@@ -3,7 +3,7 @@ package com.example.demo.Reserva;
 
 import java.util.List;
 
-import com.example.demo.HotelService.PersonaRepository;
+import com.example.demo.PersonaServicio.PersonaRepository;
 import com.example.demo.model.Persona;
 import java.util.Optional;
 import com.example.demo.model.Reserva;

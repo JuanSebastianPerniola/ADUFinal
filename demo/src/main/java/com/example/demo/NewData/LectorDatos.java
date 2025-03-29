@@ -3,17 +3,21 @@ package com.example.demo.NewData;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.sql.*;
-import java.util.logging.XMLFormatter;
-
 
 public class LectorDatos extends ProcesarArchivos {
     private static final Logger logger = LoggerFactory.getLogger(LectorDatos.class);
 
     public static void main(String[] args) {
+        procesarArchivosLocales();
+        procesarDatosDesdeMongo();
+    }
+
+    /**
+     * Procesa archivos desde la carpeta local "Archivos"
+     */
+    private static void procesarArchivosLocales() {
         File carpeta = new File("Archivos");
 
         if (!carpeta.exists() || !carpeta.isDirectory()) {
@@ -31,9 +35,8 @@ public class LectorDatos extends ProcesarArchivos {
             try {
                 JsonNode jsonData = null;
                 if (archivo.getName().endsWith(".xml")) {
-                    jsonData = ProcesarArchivos.readJsonFile(archivo);
+//                    jsonData = ProcesarArchivosk.convertXmlFileToJson(archivo);
                 } else if (archivo.getName().endsWith(".json")) {
-
                     jsonData = ProcesarArchivos.readJsonFile(archivo);
                 }
 
@@ -52,6 +55,25 @@ public class LectorDatos extends ProcesarArchivos {
         }
     }
 
+    /**
+     * Procesa los datos obtenidos desde MongoDB e inserta en MySQL.
+     */
+    private static void procesarDatosDesdeMongo() {
+        logger.info("Iniciando procesamiento de datos desde MongoDB...");
+//        List<JsonNode> datosMongo = LectorDatosMongo.obtenerDatosDesdeMongo();
+//        if (datosMongo.isEmpty()) {
+//            logger.warn("No se encontraron datos en MongoDB.");
+//            return;
+//        }
+//
+//        for (JsonNode jsonData : datosMongo) {
+//            procesarDatos(jsonData);
+//        }
+    }
+
+    /**
+     * Procesa un JSON y lo inserta en MySQL
+     */
     public static void procesarDatos(JsonNode jsonData) {
         String url = "jdbc:mysql://localhost:3306/hotel_db";
         String usuario = "root";
@@ -64,21 +86,25 @@ public class LectorDatos extends ProcesarArchivos {
         String sqlReserva = "INSERT INTO reservas (id_persona, check_in, check_out) VALUES (?, ?, ?)";
 
         try (Connection conexion = DriverManager.getConnection(url, usuario, contraseña)) {
-            JsonNode reservas = jsonData.get("reservas");
-            if (reservas == null || !reservas.has("persona")) {
+            JsonNode personaNode = jsonData.path("reservas").path("persona");
+
+            if (personaNode.isMissingNode()) {
                 logger.warn("El JSON no contiene datos válidos para procesar.");
                 return;
             }
 
-            JsonNode personaNode = reservas.get("persona");
+            String nombre = personaNode.path("nombre").asText(null);
+            String apellido = personaNode.path("apellido").asText(null);
+            String email = personaNode.path("email").asText(null);
+            int edad = personaNode.path("edad").asInt(0);
+            long tarjeta = personaNode.path("tarjeta").asLong(0);
+            String checkIn = personaNode.path("checkIn").asText(null);
+            String checkOut = personaNode.path("checkOut").asText(null);
 
-            String nombre = personaNode.get("nombre").asText();
-            String apellido = personaNode.get("apellido").asText();
-            String email = personaNode.get("email").asText();
-            int edad = personaNode.get("edad").asInt();
-            long tarjeta = personaNode.get("tarjeta").asLong();
-            String checkIn = personaNode.get("checkIn").asText();
-            String checkOut = personaNode.get("checkOut").asText();
+            if (nombre == null || apellido == null || email == null || checkIn == null || checkOut == null) {
+                logger.error("Faltan datos esenciales en el JSON.");
+                return;
+            }
 
             int idPersona;
             try (PreparedStatement stmtPersona = conexion.prepareStatement(sqlPersona, Statement.RETURN_GENERATED_KEYS)) {
@@ -93,7 +119,6 @@ public class LectorDatos extends ProcesarArchivos {
                     if (rs.next()) {
                         idPersona = rs.getInt(1);
                     } else {
-                        // Si no se generó clave, buscar el ID manualmente
                         try (PreparedStatement stmtGetId = conexion.prepareStatement("SELECT id FROM persona WHERE email = ?")) {
                             stmtGetId.setString(1, email);
                             try (ResultSet rsGetId = stmtGetId.executeQuery()) {

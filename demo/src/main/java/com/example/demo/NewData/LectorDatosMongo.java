@@ -1,44 +1,46 @@
 package com.example.demo.NewData;
 
-import com.example.demo.HotelService.PersonaRepository;
-import com.example.demo.Reserva.IReservaJPA;
-import com.example.demo.model.Persona;
-import com.example.demo.model.Reserva;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.*;
+import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Service
+import java.util.ArrayList;
+import java.util.List;
+
 public class LectorDatosMongo {
+    private static final Logger logger = LoggerFactory.getLogger(LectorDatosMongo.class);
+    private static final ObjectMapper jsonMapper = new ObjectMapper();
 
-    @Autowired
-    private PersonaRepository personaRepository;
+    public static List<JsonNode> obtenerDatosDesdeMongo() {
+        List<JsonNode> datosMongo = new ArrayList<>();
+        String uri = "mongodb://localhost:27017";
+        String databaseName = "practica_java";
+        String collectionName = "JsonToXML";
 
-    @Autowired
-    private IReservaJPA reservaRepository;
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection(collectionName);
 
-    public void procesarDatos(JsonNode jsonData) {
-        JsonNode reservas = jsonData.get("reservas");
-        if (reservas == null || !reservas.has("persona")) {
-            return;
+            FindIterable<Document> documents = collection.find();
+            try (MongoCursor<Document> cursor = documents.iterator()) {
+                while (cursor.hasNext()) {
+                    Document doc = cursor.next();
+                    JsonNode jsonNode = jsonMapper.readTree(doc.toJson());
+                    datosMongo.add(jsonNode);
+                }
+            }
+
+            logger.info("Se obtuvieron {} documentos de MongoDB", datosMongo.size());
+
+        } catch (Exception e) {
+            logger.error("Error al obtener datos de MongoDB. URI: {}, DB: {}, Collection: {}",
+                    uri, databaseName, collectionName, e);
+            throw new RuntimeException("Error al leer datos de MongoDB", e);
         }
 
-        JsonNode personaNode = reservas.get("persona");
-
-        String email = personaNode.get("email").asText();
-        Persona persona = personaRepository.findByEmail(email).orElse(new Persona());
-
-        persona.setNombre(personaNode.get("nombre").asText());
-        persona.setApellido(personaNode.get("apellido").asText());
-        persona.setEmail(email);
-        persona.setEdad(personaNode.get("edad").asInt());
-
-        persona = personaRepository.save(persona); // Guarda en MongoDB
-
-        Reserva reserva = new Reserva();
-        reserva.setCheckIn(personaNode.get("checkIn").asText());
-        reserva.setCheckOut(personaNode.get("checkOut").asText());
-
-        reservaRepository.save(reserva); // Guarda la reserva en MongoDB
+        return datosMongo;
     }
 }

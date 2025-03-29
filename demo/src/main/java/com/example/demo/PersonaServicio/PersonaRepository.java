@@ -1,8 +1,5 @@
-package com.example.demo.HotelService;
+package com.example.demo.PersonaServicio;
 
-
-
-// Vale no utilizar JPA de hotel, no hace falta
 import com.example.demo.model.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
