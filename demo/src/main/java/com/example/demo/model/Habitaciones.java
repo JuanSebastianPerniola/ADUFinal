@@ -1,28 +1,64 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "habitaciones")
 public class Habitaciones {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
+    @Column(name = "room_name", nullable = false)
     private String roomName;
-    private String roomPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "hotel_id")
+    @Column(name = "room_price", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    private BigDecimal roomPrice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
-    public Habitaciones(String roomId, String roomType, double roomPrice) {
-        this.roomName = roomType;  // O usa roomId si prefieres
-        this.roomPrice = String.valueOf(roomPrice);
+    public Habitaciones() {
+    }
+
+    public Habitaciones(Long id, String roomName, BigDecimal roomPrice, Hotel hotel) {
+        this.id = id;
+        this.roomName = roomName;
+        this.roomPrice = roomPrice;
+        this.hotel = hotel;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public BigDecimal getRoomPrice() {
+        return roomPrice;
+    }
+
+    public void setRoomPrice(BigDecimal roomPrice) {
+        this.roomPrice = roomPrice;
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
     }
 }

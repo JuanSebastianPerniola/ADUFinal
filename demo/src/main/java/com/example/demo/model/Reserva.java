@@ -46,12 +46,13 @@ public class Reserva {
     private List<Reserva> subReservas;
 
 
-    @Column(name = "tipo_de_habitacion", nullable = false)
-    private String tipoDeHabitacion;
+    //@Column(name = "tipo_de_habitacion", nullable = false)
+    //private Habitaciones tipoDeHabitacion;
 
-//    public Reserva() {
-//
-//    }
+    @Enumerated(EnumType.STRING)
+    private Habitaciones tipoDeHabitacion;
+    @OneToMany(mappedBy = "habitacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reserva> reservas;
 
     public Long getIdReserva() {
         return idReserva;
@@ -101,18 +102,12 @@ public class Reserva {
         this.subReservas = subReservas;
     }
 
-    public String getTipoDeHabitacion() {
-        return tipoDeHabitacion;
-    }
-
-    public void setTipoDeHabitacion(String tipoDeHabitacion) {
+    public void setTipoDeHabitacion(Habitaciones tipoDeHabitacion) {
         this.tipoDeHabitacion = tipoDeHabitacion;
     }
 
-    public void setTipoHabitacion(String tipoHabitacion) {
+    public void setTipoHabitacion(Habitaciones tipoHabitacion) {
 
     }
 
-    public void setClientName(String clientName) {
-    }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import com.example.demo.HabitacionesServiceJPA.IHabitacionJPA;
 import com.example.demo.HotelServiceJpa.IHotelJPA;
 import com.example.demo.PersonaServicio.PersonaRepository;
 import com.example.demo.model.Hotel;
@@ -54,6 +55,8 @@ public class BatchIngestionModule {
     private IReservaJPA reservationRepository;
     @Autowired
     private IHotelJPA iHotelJPA;
+    @Autowired
+    private IHabitacionJPA iHabitacionJPA;
     @Autowired
     private PersonaRepository personaRepository;
     @Autowired
@@ -134,8 +137,8 @@ public class BatchIngestionModule {
             String roomType = getElementTextContent(roomElement, "roomType");
             double roomPrice = Double.parseDouble(getElementTextContent(roomElement, "price"));
 
-            Habitaciones room = new Habitaciones(roomId, roomType, roomPrice);
-            rooms.add(room);
+           // Habitaciones room = new Habitaciones(roomId, roomType, roomPrice);
+            //rooms.add(room);
         }
     return null;
 //        return new Reserva(reservationId, clientName, email, checkInDate, checkOutDate, guests, totalPrice, rooms);
@@ -153,23 +156,30 @@ public class BatchIngestionModule {
         JsonNode root = objectMapper.readTree(jsonFile);
 
         // 1. Validar campos obligatorios
-        if (!root.has("personaId") || !root.has("checkIn")) {
-            throw new IllegalArgumentException("JSON debe contener personaId y fechas");
+        if (!root.has("personaId") || !root.has("checkIn") || !root.has("hotelId")) {
+            throw new IllegalArgumentException("JSON debe contener personaId, hotelId y fechas");
         }
 
-        // 2. Buscar la persona (esto lanzará excepción si no existe)
+        // 2. Buscar las entidades relacionadas
         Persona persona = personaRepository.findById(root.get("personaId").asLong())
                 .orElseThrow(() -> new RuntimeException("Persona no encontrada con ID: " + root.get("personaId").asLong()));
+
+        Hotel hotel = iHotelJPA.findById(root.get("hotelId").asLong())
+                .orElseThrow(() -> new RuntimeException("Hotel no encontrado con ID: " + root.get("hotelId").asLong()));
+
+        Habitaciones habitacion = iHabitacionJPA.findById(root.get("habitacionId").asLong())
+                .orElseThrow(() -> new RuntimeException("Habitación no encontrada con ID: " + root.get("habitacionId").asLong()));
 
         // 3. Crear y guardar la reserva
         Reserva reserva = new Reserva();
         reserva.setPersona(persona);
+        reserva.setHotel(hotel);
+        reserva.setTipoHabitacion(habitacion);
         reserva.setCheckIn(LocalDate.parse(root.get("checkIn").asText()));
         reserva.setCheckOut(LocalDate.parse(root.get("checkOut").asText()));
 
         return reserva;
     }
-
     private void moveFile(File file, String targetDirectory) {
         try {
             Path sourcePath = file.toPath();
