@@ -46,13 +46,9 @@ public class Reserva {
     private List<Reserva> subReservas;
 
 
-    //@Column(name = "tipo_de_habitacion", nullable = false)
-    //private Habitaciones tipoDeHabitacion;
-
-    @Enumerated(EnumType.STRING)
-    private Habitaciones tipoDeHabitacion;
-    @OneToMany(mappedBy = "habitacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Reserva> reservas;
+    @ManyToOne
+    @JoinColumn(name = "habitacion_id", nullable = false)
+    private Habitaciones habitacion; // Este nombre DEBE coincidir con mappedBy en Habitaciones
 
     public Long getIdReserva() {
         return idReserva;
@@ -102,12 +98,6 @@ public class Reserva {
         this.subReservas = subReservas;
     }
 
-    public void setTipoDeHabitacion(Habitaciones tipoDeHabitacion) {
-        this.tipoDeHabitacion = tipoDeHabitacion;
+    public void setTipoHabitacion(Habitaciones habitacion) {
     }
-
-    public void setTipoHabitacion(Habitaciones tipoHabitacion) {
-
-    }
-
 }

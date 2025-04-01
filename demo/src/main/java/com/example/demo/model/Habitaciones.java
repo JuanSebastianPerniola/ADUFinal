@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "habitaciones")
@@ -20,6 +21,8 @@ public class Habitaciones {
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
+    @OneToMany(mappedBy = "habitacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reserva> reservas;
     public Habitaciones() {
     }
 

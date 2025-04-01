@@ -153,7 +153,8 @@ public class BatchIngestionModule {
     }
 
     private Reserva parseJsonReservation(File jsonFile) throws Exception {
-        JsonNode root = objectMapper.readTree(jsonFile);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode root = objectMapper.readTree(jsonFile); // Lee el JSON
 
         // 1. Validar campos obligatorios
         if (!root.has("personaId") || !root.has("checkIn") || !root.has("hotelId")) {
@@ -170,11 +171,11 @@ public class BatchIngestionModule {
         Habitaciones habitacion = iHabitacionJPA.findById(root.get("habitacionId").asLong())
                 .orElseThrow(() -> new RuntimeException("Habitación no encontrada con ID: " + root.get("habitacionId").asLong()));
 
-        // 3. Crear y guardar la reserva
+        // 3. Crear y devolver la reserva
         Reserva reserva = new Reserva();
         reserva.setPersona(persona);
         reserva.setHotel(hotel);
-        reserva.setTipoHabitacion(habitacion);
+        reserva.setHabitacion(habitacion);
         reserva.setCheckIn(LocalDate.parse(root.get("checkIn").asText()));
         reserva.setCheckOut(LocalDate.parse(root.get("checkOut").asText()));
 
