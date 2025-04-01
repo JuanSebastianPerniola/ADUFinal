@@ -15,9 +15,14 @@ public class Habitaciones {
     private long id;
 
     private String roomName;
+    private String roomPrice;
 
     @ManyToOne
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
+    public Habitaciones(String roomId, String roomType, double roomPrice) {
+        this.roomName = roomType;  // O usa roomId si prefieres
+        this.roomPrice = String.valueOf(roomPrice);
+    }
 }

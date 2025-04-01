@@ -1,3 +1,0 @@
-New Data es una carpeta especifica para controlar la enjuyicion de datos de mongo, como datos que se
-añadan dentro de esa carpeta.
-Si añaden datos en otro sitio no se podra cargar en la base de datos.

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -16,11 +17,11 @@ import java.util.List;
 public class Reserva {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idReserva;
 
     @Column(nullable = false)
-    private String checkOut, checkIn;
+    private LocalDate checkOut, checkIn;
 
     // Relación con Hotel (Muchos a Uno)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,6 +45,14 @@ public class Reserva {
     @OneToMany(mappedBy = "reservaPadre", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reserva> subReservas;
 
+
+    @Column(name = "tipo_de_habitacion", nullable = false)
+    private String tipoDeHabitacion;
+
+//    public Reserva() {
+//
+//    }
+
     public Long getIdReserva() {
         return idReserva;
     }
@@ -52,19 +61,19 @@ public class Reserva {
         this.idReserva = idReserva;
     }
 
-    public String getCheckOut() {
+    public LocalDate getCheckOut() {
         return checkOut;
     }
 
-    public void setCheckOut(String checkOut) {
+    public void setCheckOut(LocalDate checkOut) {
         this.checkOut = checkOut;
     }
 
-    public String getCheckIn() {
+    public LocalDate getCheckIn() {
         return checkIn;
     }
 
-    public void setCheckIn(String checkIn) {
+    public void setCheckIn(LocalDate checkIn) {
         this.checkIn = checkIn;
     }
     // Getters y Setters adicionales
@@ -74,5 +83,36 @@ public class Reserva {
 
     public void setPersona(Persona persona) {
         this.persona = persona;
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+    }
+
+    public List<Reserva> getSubReservas() {
+        return subReservas;
+    }
+
+    public void setSubReservas(List<Reserva> subReservas) {
+        this.subReservas = subReservas;
+    }
+
+    public String getTipoDeHabitacion() {
+        return tipoDeHabitacion;
+    }
+
+    public void setTipoDeHabitacion(String tipoDeHabitacion) {
+        this.tipoDeHabitacion = tipoDeHabitacion;
+    }
+
+    public void setTipoHabitacion(String tipoHabitacion) {
+
+    }
+
+    public void setClientName(String clientName) {
     }
 }

@@ -1,42 +1,35 @@
 package com.example.demo.Reserva;
 
 import com.example.demo.model.Reserva;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/reserva")
 public class ReservaController {
-    // Llamamos el IJPA de la parte de springbooty 🍑
-    @Autowired
-    private ReservaService reservaService;
 
-    // Mostrar todas las reservas hechas
+    private final ReservaService reservaService;
+
+    public ReservaController(ReservaService reservaService) {
+        this.reservaService = reservaService;
+    }
+
     @GetMapping("/listar")
-    public ResponseEntity<List<Object[]>> listarReservas() {
-        List<Object[]> reservas = reservaService.listarReservas();
-        return ResponseEntity.ok().body(reservas);
+    public ResponseEntity<List<Reserva>> listarReservas() {
+        return ResponseEntity.ok(reservaService.listarReservasCompletas());
     }
 
-    // Delete
-    @DeleteMapping("/deleteReservar/{id}")
-    public ResponseEntity<String> elimnar(@PathVariable Long id) {
-        // Elimanar reserva por id
-        reservaService.EliminarReserva(id);
-        return ResponseEntity.ok("Reserva eliminado correctamente");
+    @GetMapping("/{id}")
+    public ResponseEntity<Reserva> obtenerReserva(@PathVariable Long id) {
+        return ResponseEntity.ok(reservaService.obtenerReservaPorId(id));
     }
 
-    // Upadte
-    @PutMapping("/actualizar")
-    public ResponseEntity<?> actualizarReserva(@RequestBody Reserva reserva) {
-        Reserva actualizada = reservaService.ActualizarReserva(reserva);
-        return ResponseEntity.ok(actualizada);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarReserva(@PathVariable Long id) {
+        reservaService.eliminarReserva(id);
+        return ResponseEntity.noContent().build();
     }
-
-
 }
