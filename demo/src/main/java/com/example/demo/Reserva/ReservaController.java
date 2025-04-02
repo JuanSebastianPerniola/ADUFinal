@@ -19,7 +19,9 @@ public class ReservaController {
 
     @GetMapping("/listar")
     public ResponseEntity<List<Reserva>> listarReservas() {
-        return ResponseEntity.ok(reservaService.listarReservasCompletas());
+        List<Reserva> reservas = reservaService.listarReservasCompletas();
+        System.out.println("Reservas enviadas: " + reservas);
+        return ResponseEntity.ok(reservas);
     }
 
     @GetMapping("/{id}")

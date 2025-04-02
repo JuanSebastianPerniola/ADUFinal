@@ -15,9 +15,11 @@ public class ReservaService {
         this.reservaRepository = reservaRepository;
     }
 
+    // read only para optimizar el hibernate
+    // prevee modificacion accidentales
     @Transactional(readOnly = true)
     public List<Reserva> listarReservasCompletas() {
-        return reservaRepository.findAllWithHotelAndPersona();
+        return reservaRepository.findAllWithRelations();
     }
 
     @Transactional(readOnly = true)
