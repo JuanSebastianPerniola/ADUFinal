@@ -24,14 +24,17 @@ public class ReservaController {
         return ResponseEntity.ok(reservas);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Reserva> obtenerReserva(@PathVariable Long id) {
-        return ResponseEntity.ok(reservaService.obtenerReservaPorId(id));
-    }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> eliminarReserva(@PathVariable Long id) {
         reservaService.eliminarReserva(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Reserva> actualizarReserva(
+            @PathVariable Long id,
+            @RequestBody Reserva reserva) {
+        return ResponseEntity.ok(reservaService.guardarReserva(id, reserva));
     }
 }

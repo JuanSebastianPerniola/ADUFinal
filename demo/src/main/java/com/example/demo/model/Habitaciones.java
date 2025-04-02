@@ -17,8 +17,8 @@ public class Habitaciones {
     @Column(name = "room_price", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private BigDecimal roomPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "hotel_id", nullable = true)
     private Hotel hotel;
 
     @OneToMany(mappedBy = "habitacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
