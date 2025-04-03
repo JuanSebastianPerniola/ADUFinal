@@ -7,8 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,7 +17,6 @@ import com.example.demo.PersonaServicio.PersonaRepository;
 import com.example.demo.model.Hotel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -32,7 +29,7 @@ import com.example.demo.model.Reserva;
 import com.example.demo.model.Habitaciones;
 import com.example.demo.Reserva.*;
 import com.example.demo.model.Persona;
-
+import com.example.demo.PersonaServicio.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +58,8 @@ public class BatchIngestionModule {
     private PersonaRepository personaRepository;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private PersonaReservationProcessor personaProcessor;
 
     @Scheduled(fixedRateString = "${ingestion.batch.schedule.rate:600000}")
     public void processFiles() {
@@ -79,6 +78,11 @@ public class BatchIngestionModule {
                 try {
                     logger.info("Processing XML file: {}", xmlFile.getName());
                     Reserva reserva = parseXmlReservation(xmlFile);
+
+                    // Create a new persona for this reservation
+                    Persona originalPersona = reserva.getPersona();
+                    reserva = personaProcessor.createNewPersonaForReservation(originalPersona, reserva);
+
                     reservationRepository.save(reserva);
                     moveFile(xmlFile, correctDirectory);
                     logger.info("Successfully processed XML file: {}", xmlFile.getName());
@@ -99,6 +103,11 @@ public class BatchIngestionModule {
                 try {
                     logger.info("Processing JSON file: {}", jsonFile.getName());
                     Reserva reservation = parseJsonReservation(jsonFile);
+
+                    // Create a new persona for this reservation
+                    Persona originalPersona = reservation.getPersona();
+                    reservation = personaProcessor.createNewPersonaForReservation(originalPersona, reservation);
+
                     reservationRepository.save(reservation);
                     moveFile(jsonFile, correctDirectory);
                     logger.info("Successfully processed JSON file: {}", jsonFile.getName());
@@ -110,6 +119,7 @@ public class BatchIngestionModule {
         }
     }
 
+    // Rest of your class remains the same...
     private Reserva parseXmlReservation(File xmlFile) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -191,6 +201,7 @@ public class BatchIngestionModule {
 
         return reserva;
     }
+
     private void moveFile(File file, String targetDirectory) {
         try {
             Path sourcePath = file.toPath();
