@@ -4,7 +4,9 @@ import com.example.demo.HabitacionesServiceJPA.IHabitacionJPA;
 import com.example.demo.HotelServiceJpa.IHotelJPA;
 import com.example.demo.PersonaServicio.PersonaRepository;
 import com.example.demo.model.Habitaciones;
+import com.example.demo.model.Persona;
 import com.example.demo.model.Reserva;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,27 +41,36 @@ public class ReservaService {
 
     @Transactional
     public void eliminarReserva(Long id) {
+        // Opcional: verificar si existe primero
+        reservaRepository.findById(id).ifPresent(reservaRepository::delete);
+
+        // O simplemente
         reservaRepository.deleteById(id);
     }
 
     // Nuevo método para procesar y guardar reserva desde un archivo
     @Transactional
-    public Reserva guardarReserva(Long id, Reserva reserva) {
-        // Cargar habitación existente con su hotel
-        if (reserva.getHabitacion() != null && reserva.getHabitacion().getId() != null) {
-            Habitaciones habitacionExistente = iHabitacionJPA.findById(reserva.getHabitacion().getId())
-                    .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
-            reserva.setHabitacion(habitacionExistente);
-        }
-        if (reserva.getHotel() != null && reserva.getHotel().getId() == null) {
-            iHotelJPA.save(reserva.getHotel());
+    public Reserva actualizarNombrePersona(Long reservaId, Reserva reservaActualizada) {
+        // Fetch the existing reservation
+        Reserva reservaExistente = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new EntityNotFoundException("Reserva not found with id: " + reservaId));
+
+        // Just update the person's name if a person exists
+        if (reservaActualizada.getPersona() != null && reservaActualizada.getPersona().getNombre() != null) {
+            // Get the existing person to update
+            Persona personaExistente = reservaExistente.getPersona();
+
+            if (personaExistente != null) {
+                // Update just the name
+                personaExistente.setNombre(reservaActualizada.getPersona().getNombre());
+                // If you want to update other person fields, add them here
+
+                // Save the updated person
+                personaRepository.save(personaExistente);
+            }
         }
 
-        if (reserva.getPersona() != null && reserva.getPersona().getId() == null) {
-            personaRepository.save(reserva.getPersona());
-        }
-
-        // Luego guardar la reserva
-        return reservaRepository.save(reserva);
+        // Return the updated reservation
+        return reservaExistente;
     }
 }

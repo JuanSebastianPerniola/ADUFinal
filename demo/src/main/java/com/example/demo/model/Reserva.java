@@ -32,7 +32,7 @@
         @JsonIncludeProperties({"idHotel", "nombre", "direccion"})
         private Hotel hotel;
 
-        @ManyToOne(optional = true,fetch = FetchType.EAGER)
+        @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
         @JoinColumn(name = "habitacion_id", nullable = true)
         @JsonIncludeProperties({"idHabitacion", "tipo", "capacidad"})
         private Habitaciones habitacion;

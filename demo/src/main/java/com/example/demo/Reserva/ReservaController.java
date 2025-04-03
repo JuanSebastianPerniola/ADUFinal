@@ -1,9 +1,11 @@
 package com.example.demo.Reserva;
 
+import com.example.demo.PersonaServicio.*;
+import com.example.demo.model.Persona;
 import com.example.demo.model.Reserva;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.nio.file.Paths;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -12,9 +14,11 @@ import java.util.List;
 public class ReservaController {
 
     private final ReservaService reservaService;
+    private final PersonaRepository personaRepository;
 
-    public ReservaController(ReservaService reservaService) {
+    public ReservaController(ReservaService reservaService, PersonaRepository personaRepository) {
         this.reservaService = reservaService;
+        this.personaRepository = personaRepository;
     }
 
     @GetMapping("/listar")
@@ -28,13 +32,19 @@ public class ReservaController {
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> eliminarReserva(@PathVariable Long id) {
         reservaService.eliminarReserva(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.accepted().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Reserva> actualizarReserva(
-            @PathVariable Long id,
-            @RequestBody Reserva reserva) {
-        return ResponseEntity.ok(reservaService.guardarReserva(id, reserva));
+    @PutMapping("/persona/{personaId}")
+    public ResponseEntity<Persona> actualizarNombrePersona(
+            @PathVariable Long personaId,
+            @RequestBody Persona persona) {
+
+        Persona personaExistente = personaRepository.findById(personaId)
+                .orElseThrow(() -> new EntityNotFoundException("Persona not found with id: " + personaId));
+
+        personaExistente.setNombre(persona.getNombre());
+
+        return ResponseEntity.ok(personaRepository.save(personaExistente));
     }
 }
