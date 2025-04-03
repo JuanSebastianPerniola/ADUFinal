@@ -62,7 +62,7 @@ public class BatchIngestionModule {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Scheduled(fixedRateString = "${ingestion.batch.schedule.rate:60000}")
+    @Scheduled(fixedRateString = "${ingestion.batch.schedule.rate:600000}")
     public void processFiles() {
         logger.info("Starting batch ingestion process");
         processXmlFiles();
@@ -118,30 +118,40 @@ public class BatchIngestionModule {
 
         Element rootElement = document.getDocumentElement();
 
-        // Define XML format and extract data
-        String reservationId = getElementTextContent(rootElement, "id");
-        String clientName = getElementTextContent(rootElement, "clientName");
-        String email = getElementTextContent(rootElement, "email");
-        String checkInDate = getElementTextContent(rootElement, "checkInDate");
-        String checkOutDate = getElementTextContent(rootElement, "checkOutDate");
-        String guests = getElementTextContent(rootElement, "guests");
-        double totalPrice = Double.parseDouble(getElementTextContent(rootElement, "totalPrice"));
+        // Extract essential IDs from XML
+        Long personaId = Long.parseLong(getElementTextContent(rootElement, "personaId"));
+        Long hotelId = Long.parseLong(getElementTextContent(rootElement, "hotelId"));
+        Long habitacionId = Long.parseLong(getElementTextContent(rootElement, "habitacionId"));
+        String checkInStr = getElementTextContent(rootElement, "checkIn");
+        String checkOutStr = getElementTextContent(rootElement, "checkOut");
 
-        // Extract room details
-        NodeList roomNodes = rootElement.getElementsByTagName("room");
-        List<Habitaciones> rooms = new ArrayList<>();
-
-        for (int i = 0; i < roomNodes.getLength(); i++) {
-            Element roomElement = (Element) roomNodes.item(i);
-            String roomId = getElementTextContent(roomElement, "roomId");
-            String roomType = getElementTextContent(roomElement, "roomType");
-            double roomPrice = Double.parseDouble(getElementTextContent(roomElement, "price"));
-
-           // Habitaciones room = new Habitaciones(roomId, roomType, roomPrice);
-            //rooms.add(room);
+        // Validate required fields
+        if (personaId == null || hotelId == null || checkInStr == null || checkOutStr == null) {
+            throw new IllegalArgumentException("XML debe contener personaId, hotelId y fechas");
         }
-    return null;
-//        return new Reserva(reservationId, clientName, email, checkInDate, checkOutDate, guests, totalPrice, rooms);
+
+        // Find related entities
+        Persona persona = personaRepository.findById(personaId)
+                .orElseThrow(() -> new RuntimeException("Persona no encontrada con ID: " + personaId));
+
+        Hotel hotel = iHotelJPA.findById(hotelId)
+                .orElseThrow(() -> new RuntimeException("Hotel no encontrado con ID: " + hotelId));
+
+        Habitaciones habitacion = null;
+        if (habitacionId != null) {
+            habitacion = iHabitacionJPA.findById(habitacionId)
+                    .orElseThrow(() -> new RuntimeException("Habitación no encontrada con ID: " + habitacionId));
+        }
+
+        // Create and return the reservation
+        Reserva reserva = new Reserva();
+        reserva.setPersona(persona);
+        reserva.setHotel(hotel);
+        reserva.setHabitacion(habitacion);
+        reserva.setCheckIn(LocalDate.parse(checkInStr));
+        reserva.setCheckOut(LocalDate.parse(checkOutStr));
+
+        return reserva;
     }
 
     private String getElementTextContent(Element parent, String elementName) {
