@@ -27,7 +27,7 @@ public class ReservaController {
         System.out.println("Reservas enviadas: " + reservas);
         return ResponseEntity.ok(reservas);
     }
-
+ // comentario de prueba
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> eliminarReserva(@PathVariable Long id) {
