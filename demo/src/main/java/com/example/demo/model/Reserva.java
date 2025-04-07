@@ -1,12 +1,12 @@
     package com.example.demo.model;
 
     import com.fasterxml.jackson.annotation.JsonFormat;
-    import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
     import com.fasterxml.jackson.annotation.JsonIncludeProperties;
     import jakarta.persistence.*;
     import lombok.AllArgsConstructor;
     import lombok.Data;
     import lombok.NoArgsConstructor;
+    import lombok.Setter;
 
     import java.time.LocalDate;
 
@@ -15,6 +15,7 @@
     @NoArgsConstructor
     @AllArgsConstructor
     public class Reserva {
+        @Setter
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long idReserva;
@@ -23,6 +24,7 @@
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate checkIn;
 
+        @Setter
         @Column(nullable = false)
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate checkOut;
@@ -32,7 +34,7 @@
         @JsonIncludeProperties({"idHotel", "nombre", "direccion"})
         private Hotel hotel;
 
-        @ManyToOne(optional = true,fetch = FetchType.EAGER)
+        @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
         @JoinColumn(name = "habitacion_id", nullable = true)
         @JsonIncludeProperties({"idHabitacion", "tipo", "capacidad"})
         private Habitaciones habitacion;
@@ -41,47 +43,6 @@
         @JoinColumn(name = "persona_id", nullable = false)
         @JsonIncludeProperties({"id", "nombre", "apellidos", "email", "telefono"})
         private Persona persona;
-
-
-        public Long getIdReserva() {
-            return idReserva;
-        }
-
-        public void setIdReserva(Long idReserva) {
-            this.idReserva = idReserva;
-        }
-
-        public LocalDate getCheckOut() {
-            return checkOut;
-        }
-
-        public void setCheckOut(LocalDate checkOut) {
-            this.checkOut = checkOut;
-        }
-
-        public LocalDate getCheckIn() {
-            return checkIn;
-        }
-
-        public void setCheckIn(LocalDate checkIn) {
-            this.checkIn = checkIn;
-        }
-        // Getters y Setters adicionales
-        public Persona getPersona() {
-            return persona;
-        }
-
-        public void setPersona(Persona persona) {
-            this.persona = persona;
-        }
-
-        public Hotel getHotel() {
-            return hotel;
-        }
-
-        public void setHotel(Hotel hotel) {
-            this.hotel = hotel;
-        }
 
         public void setTipoHabitacion(Habitaciones habitacion) {
         }
