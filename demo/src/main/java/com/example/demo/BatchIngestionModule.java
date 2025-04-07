@@ -156,6 +156,10 @@ public class BatchIngestionModule {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode root = objectMapper.readTree(jsonFile); // Lee el JSON
 
+        if (!root.has("personaId") || !root.has("checkIn") || !root.has("checkOut") ||
+                !root.has("hotelId") || !root.has("habitacionId")) {
+            throw new IllegalArgumentException("JSON debe contener personaId, hotelId, habitacionId y fechas");
+        }
         // 1. Validar campos obligatorios
         if (!root.has("personaId") || !root.has("checkIn") || !root.has("hotelId")) {
             throw new IllegalArgumentException("JSON debe contener personaId, hotelId y fechas");
@@ -175,7 +179,7 @@ public class BatchIngestionModule {
         Reserva reserva = new Reserva();
         reserva.setPersona(persona);
         reserva.setHotel(hotel);
-        reserva.setHabitacion(habitacion);
+        reserva.setTipoHabitacion(habitacion);
         reserva.setCheckIn(LocalDate.parse(root.get("checkIn").asText()));
         reserva.setCheckOut(LocalDate.parse(root.get("checkOut").asText()));
 
@@ -183,16 +187,15 @@ public class BatchIngestionModule {
     }
     private void moveFile(File file, String targetDirectory) {
         try {
+            logger.info("Attempting to move file {} to {}", file.getAbsolutePath(), targetDirectory);
             Path sourcePath = file.toPath();
             Path targetPath = Paths.get(targetDirectory, file.getName());
 
-            // Ensure target directory exists
             Files.createDirectories(Paths.get(targetDirectory));
-
             Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-            logger.info("Moved file {} to {}", file.getName(), targetDirectory);
+            logger.info("File moved successfully");
         } catch (IOException e) {
-            logger.error("Failed to move file {}: {}", file.getName(), e.getMessage(), e);
+            logger.error("Failed to move file", e);
         }
     }
 }
