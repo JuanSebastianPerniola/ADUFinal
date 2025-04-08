@@ -1,4 +1,4 @@
-﻿package com.example.demo.model;
+package com.example.demo.model;
 
 
 import org.springframework.data.annotation.Id;
@@ -17,6 +17,9 @@ public class MongoReserva {
     private String ingestedAt;
 
     // Getters and setters
+    public MongoReserva() {
+        // Empty constructor needed by MongoDB
+    }
     public String getId() {
         return id;
     }
