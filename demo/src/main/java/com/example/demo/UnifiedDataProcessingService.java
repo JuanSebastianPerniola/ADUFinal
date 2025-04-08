@@ -76,36 +76,28 @@ public class UnifiedDataProcessingService {
 
         Element rootElement = document.getDocumentElement();
 
-        // Extract data
-        String clientName = getElementTextContent(rootElement, "clientName");
-        String email = getElementTextContent(rootElement, "email");
-        String checkInDate = getElementTextContent(rootElement, "checkInDate");
-        String checkOutDate = getElementTextContent(rootElement, "checkOutDate");
+        // Extraer datos como en el JSON
+        Long personaId = Long.parseLong(getElementTextContent(rootElement, "personaId"));
+        Long hotelId = Long.parseLong(getElementTextContent(rootElement, "hotelId"));
+        Long habitacionId = Long.parseLong(getElementTextContent(rootElement, "habitacionId"));
+        String checkInStr = getElementTextContent(rootElement, "checkIn");
+        String checkOutStr = getElementTextContent(rootElement, "checkOut");
 
-        // Validate dates
-        validateDates(checkInDate, checkOutDate);
+        // Validar fechas (si lo necesitas)
+        // validateDates(checkInStr, checkOutStr);
 
-        // Extract room details
-        NodeList roomNodes = rootElement.getElementsByTagName("room");
-        if (roomNodes.getLength() == 0) {
-            throw new IllegalArgumentException("No se encontró información de habitación en el archivo XML");
-        }
+        // Obtener entidades
+        Persona persona = findPersonaById(personaId);
+        Hotel hotel = findHotelById(hotelId);
+        Habitaciones habitacion = findHabitacionById(habitacionId);
 
-        Element roomElement = (Element) roomNodes.item(0);
-        String roomId = getElementTextContent(roomElement, "roomId");
-
-        // Find existing entities or throw exceptions
-        // Persona = findPersonaByEmail(email);
-        Habitaciones habitacion = findHabitacionById(Long.parseLong(roomId));
-        Hotel hotel = habitacion.getHotel();
-
-        // Create and save the reservation
+        // Crear reserva
         Reserva reserva = new Reserva();
-        // reserva.setPersona(persona);
-        reserva.setHabitacion(habitacion);
+        reserva.setPersona(persona);
         reserva.setHotel(hotel);
-        reserva.setCheckIn(LocalDate.parse(checkInDate));
-        reserva.setCheckOut(LocalDate.parse(checkOutDate));
+        reserva.setHabitacion(habitacion);
+        reserva.setCheckIn(LocalDate.parse(checkInStr));
+        reserva.setCheckOut(LocalDate.parse(checkOutStr));
 
         try {
             Reserva savedReserva = reservationRepository.save(reserva);
@@ -116,7 +108,6 @@ public class UnifiedDataProcessingService {
             throw new RuntimeException("Error al guardar la reserva: " + e.getMessage(), e);
         }
     }
-
     /**
      * Process JSON reservation
      */
@@ -135,7 +126,7 @@ public class UnifiedDataProcessingService {
         String checkOutStr = root.get("checkOut").asText();
 
         // Validate dates
-        validateDates(checkInStr, checkOutStr);
+//        validateDates(checkInStr, checkOutStr);
 
         // Fetch entities from database or throw exceptions if not found
         Persona persona = findPersonaById(personaId);

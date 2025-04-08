@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Habitaciones {
     @Column(name = "room_price", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private BigDecimal roomPrice;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "hotel_id", nullable = true)
     private Hotel hotel;

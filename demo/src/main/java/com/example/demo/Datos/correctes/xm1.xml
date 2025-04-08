@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reservation>
+    <personaId>1</personaId>
+    <hotelId>2</hotelId>
+    <habitacionId>7</habitacionId>
+    <checkIn>2024-02-01</checkIn>
+    <checkOut>2024-02-15</checkOut>
+</reservation>

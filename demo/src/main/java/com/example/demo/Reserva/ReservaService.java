@@ -34,6 +34,10 @@ public class ReservaService {
         this.iHotelJPA = iHotelJPA;
         this.personaRepository = personaRepository;
     }
+    @Transactional
+    public Reserva save(Reserva reserva) {
+        return reservaRepository.save(reserva);
+    }
 
     @Transactional(readOnly = true)
     public List<Reserva> listarReservasCompletas() {
@@ -49,51 +53,5 @@ public class ReservaService {
     @Transactional
     public void eliminarReserva(Long id) {
         reservaRepository.deleteById(id);
-    }
-
-    @Transactional
-    private Reserva parseJsonReservation(File jsonFile) throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode root = objectMapper.readTree(jsonFile);
-
-        // Validate required fields
-        if (!root.has("personaId") || !root.has("checkIn") || !root.has("hotelId") || !root.has("habitacionId")) {
-            throw new IllegalArgumentException("JSON debe contener personaId, hotelId, habitacionId y fechas");
-        }
-
-        // Load entities and ensure they're fully initialized
-        Long personaId = root.get("personaId").asLong();
-        Long hotelId = root.get("hotelId").asLong();
-        Long habitacionId = root.get("habitacionId").asLong();
-
-        Persona persona = personaRepository.getReferenceById(personaId);
-        // Force initialization if needed
-        persona.getId(); // This can force initialization of the proxy
-
-        Hotel hotel = iHotelJPA.getReferenceById(hotelId);
-
-        Habitaciones habitacion = iHabitacionJPA.getReferenceById(habitacionId);
-        habitacion.getId(); // Force initialization
-
-        // Create and populate reservation
-        Reserva reserva = new Reserva();
-        reserva.setPersona(persona);
-        reserva.setHotel(hotel);
-        reserva.setHabitacion(habitacion);
-        reserva.setCheckIn(LocalDate.parse(root.get("checkIn").asText()));
-        reserva.setCheckOut(LocalDate.parse(root.get("checkOut").asText()));
-
-        return reserva;
-    }
-
-    @Transactional
-    public Reserva actualizarNombrePersona(Long reservaId, String nuevoNombre) {
-        Reserva reserva = reservaRepository.findById(reservaId)
-                .orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
-
-        Persona persona = reserva.getPersona();
-        personaRepository.save(persona);
-
-        return reserva;
     }
 }

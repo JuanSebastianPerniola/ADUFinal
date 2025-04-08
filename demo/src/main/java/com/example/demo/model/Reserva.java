@@ -92,4 +92,8 @@ public class Reserva {
     public void setPersona(Persona persona) {
         this.persona = persona;
     }
+
+    public Reserva orElseThrow(Object o) {
+        return null;
+    }
 }
