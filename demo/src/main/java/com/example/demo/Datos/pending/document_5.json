@@ -1,0 +1,8 @@
+{
+    "anos_experiencia": 5,
+    "horario_disponible": "Lunes a Viernes, 8:00 - 18:00",
+    "_id": {"$oid": "6797be210a5c0f1c449da2d8"},
+    "nombre": "Carlos Ruiz",
+    "especialidad": "Entrenamiento de fuerza",
+    "id_entrenador": 301
+}

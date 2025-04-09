@@ -1,0 +1,8 @@
+{
+    "nombre_miembro": "Juan Pérez",
+    "hora_salida": "10:00",
+    "id_miembro": 1,
+    "hora_entrada": "08:30",
+    "fecha_visita": "2023-10-05",
+    "_id": {"$oid": "6797be3b0a5c0f1c449da2dc"}
+}

@@ -1,0 +1,8 @@
+{
+    "monto": 50,
+    "id_miembro": 1,
+    "_id": {"$oid": "6797be130a5c0f1c449da2d6"},
+    "metodo_pago": "Tarjeta de crédito",
+    "id_pago": 1001,
+    "fecha_pago": "2023-10-01"
+}

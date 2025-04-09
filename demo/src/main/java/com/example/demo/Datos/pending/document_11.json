@@ -1,0 +1,8 @@
+{
+    "checkIn": "2024-01-10",
+    "_id": {"$oid": "67f555491122aef4a2661ebf"},
+    "hotelId": 3,
+    "checkOut": "2024-01-17",
+    "personaId": 2,
+    "habitacionId": 12
+}

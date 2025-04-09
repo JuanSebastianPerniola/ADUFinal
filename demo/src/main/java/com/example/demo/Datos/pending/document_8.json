@@ -1,0 +1,9 @@
+{
+    "id_feedback": 701,
+    "fecha": "2023-10-05",
+    "calificacion": 5,
+    "nombre_miembro": "Juan Pérez",
+    "id_miembro": 1,
+    "_id": {"$oid": "6797be340a5c0f1c449da2db"},
+    "comentario": "Excelente servicio y atención por parte del entrenador Carlos Ruiz."
+}
