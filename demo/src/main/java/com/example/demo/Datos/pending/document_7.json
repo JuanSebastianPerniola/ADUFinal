@@ -1,9 +1,0 @@
-{
-    "descripcion": "20% de descuento en membresías Premium",
-    "fecha_inicio": "2023-10-01",
-    "fecha_fin": "2023-10-31",
-    "id_promocion": 601,
-    "nombre_promocion": "Oferta de otoño",
-    "_id": {"$oid": "6797be2d0a5c0f1c449da2da"},
-    "codigo_descuento": "OTOÑO2023"
-}
